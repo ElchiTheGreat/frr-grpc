@@ -1,18 +1,22 @@
-# syntax=docker/dockerfile:1
+FROM ubuntu:24.04
 ARG FRR_VERSION
 ARG YANG_VER
 ARG YANG_BASE
-FROM ubuntu:24.04
 
+# 1) enable universe + basic tools
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository -y universe && \
+    apt-get update
+
+# 2) build-deps (duplicate paketleri temizledim)
+RUN apt-get install -y --no-install-recommends \
       build-essential autoconf automake libtool pkg-config \
       cmake ninja-build git wget \
       libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
       python3-dev bison flex \
       libgrpc-dev libgrpc++-dev protobuf-compiler-grpc \
-      libprotobuf-dev protobuf-compiler \
-      libgrpc-dev libprotobuf-dev protobuf-c-compiler \
+      libprotobuf-dev protobuf-compiler protobuf-c-compiler \
       libprotobuf-c-dev libelf-dev checkinstall && \
     wget -q ${YANG_BASE}/libyang2t64_${YANG_VER}_arm64.deb && \
     wget -q ${YANG_BASE}/libyang2-dev_${YANG_VER}_arm64.deb && \
@@ -23,7 +27,7 @@ RUN apt-get update && \
 WORKDIR /frr
 COPY . .
 
-RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \ 
+RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
     ./bootstrap.sh && \
     git submodule update --init --recursive && \
     mkdir build && cd build && \
