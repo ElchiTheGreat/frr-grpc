@@ -106,7 +106,7 @@ jobs:
             FRR_VERSION=${{ env.FRR_VERSION }}
             YANG_VER=${{ env.YANG_VER }}
             YANG_BASE=${{ env.YANG_BASE }}
-          file: ./.github/Dockerfile.arm64
+          file: .github/Dockerfile.arm64
           tags: frr-build:arm64
 
       - name: Collect .deb from container
