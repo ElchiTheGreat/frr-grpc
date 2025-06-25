@@ -36,7 +36,7 @@ jobs:
             libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
             python3-dev bison flex \
             libgrpc-dev libprotobuf-dev protobuf-c-compiler \
-            libelf-dev                       # ← fixes clippy error
+            libprotobuf-c-dev libelf-dev
 
       - name: Generate configure
         run: |
