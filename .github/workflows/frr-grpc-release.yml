@@ -34,7 +34,7 @@ jobs:
             python3-dev bison flex \
             libgrpc-dev libprotobuf-dev protobuf-c-compiler \
             libprotobuf-c-dev libelf-dev \
-            libyang2t64 libyang2-dev libyang-dev
+            libyang2t64 libyang2-dev        # <─ revised line
 
       - name: Bootstrap
         run: |
@@ -44,9 +44,10 @@ jobs:
       - name: Configure & compile (amd64)
         run: |
           mkdir build && cd build
-          ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-                       --enable-grpc --enable-vtysh \
-                       --with-pkg-extra-version="-github-${{ github.run_number }}"
+          ../configure \
+            --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+            --enable-grpc --enable-vtysh \
+            --with-pkg-extra-version="-github-${{ github.run_number }}"
           make -j"$(nproc)"
 
       - name: Package .deb (amd64)
@@ -65,7 +66,7 @@ jobs:
           path: pkg-amd64/*.deb
 
 ###############################################################################
-# ARM64 – cross-compile using QEMU + Buildx
+# ARM64 – cross-compile via QEMU + buildx
 ###############################################################################
   build-arm64:
     runs-on: ubuntu-24.04
@@ -89,11 +90,11 @@ jobs:
         with:
           context: .
           platforms: linux/arm64
-          outputs: type=local,dest=out     # copy artifacts to ./out
+          outputs: type=local,dest=out
           push: false
           build-args: |
             FRR_VERSION=${{ env.FRR_VERSION }}
-          file: .github/Dockerfile.arm64   # see inline Dockerfile below
+          file: .github/Dockerfile.arm64
           tags: frr-build:arm64
 
       - name: Collect .deb from container
@@ -107,7 +108,7 @@ jobs:
           path: pkg-arm64/*.deb
 
 ###############################################################################
-# OPTIONAL: create GitHub Release if run from tag
+# Optional GitHub Release on tag
 ###############################################################################
   release:
     needs: [build-amd64, build-arm64]
