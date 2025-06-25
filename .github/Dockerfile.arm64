@@ -1,7 +1,6 @@
-# syntax=docker/dockerfile:1
-ARG FRR_VERSION
+# .github/Dockerfile.arm64
 FROM ubuntu:24.04
-
+ARG FRR_VERSION
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential autoconf automake libtool pkg-config \
@@ -10,12 +9,10 @@ RUN apt-get update && \
       python3-dev bison flex \
       libgrpc-dev libprotobuf-dev protobuf-c-compiler \
       libprotobuf-c-dev libelf-dev \
-      libyang2t64 libyang2-dev libyang-dev checkinstall && \
+      libyang2t64 libyang2-dev checkinstall && \
     rm -rf /var/lib/apt/lists/*
-
 WORKDIR /frr
 COPY . .
-
 RUN ./bootstrap.sh && \
     git submodule update --init --recursive && \
     mkdir build && cd build && \
