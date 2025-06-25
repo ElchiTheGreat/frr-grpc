@@ -23,7 +23,8 @@ RUN apt-get update && \
 WORKDIR /frr
 COPY . .
 
-RUN ./bootstrap.sh && \
+RUN mkdir -p /usr/include/frr && \ 
+    ./bootstrap.sh && \
     git submodule update --init --recursive && \
     mkdir build && cd build && \
     ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
