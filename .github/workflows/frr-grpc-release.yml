@@ -95,6 +95,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Debug – show tree
+        run: |
+          echo "PWD=$(pwd)"
+          echo "Workspace=$GITHUB_WORKSPACE"
+          echo "--------- root listing ----------"
+          ls -al
+          echo "--------- .github listing -------"
+          ls -al .github || true
+          echo "--------- frr-src listing -------"
+          ls -al frr-src | head || true
+          
       - name: Build arm64 inside container
         uses: docker/build-push-action@v5
         with:
