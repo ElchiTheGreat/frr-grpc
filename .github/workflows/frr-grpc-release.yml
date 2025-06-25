@@ -21,9 +21,6 @@ env:
 jobs:
   build-amd64:
     runs-on: ubuntu-24.04
-    env:
-      PKG_VER: ${{ env.PKG_VER }}
-      FRR_TAG: ${{ env.FRR_VERSION }}
       
     steps:
       - uses: actions/checkout@v4
@@ -83,11 +80,6 @@ jobs:
 ################################################################################
   build-arm64:
     runs-on: [self-hosted, macos, arm64]
-    env:
-      FRR_VERSION: ${{ env.FRR_VERSION }}
-      PKG_VER: ${{ env.PKG_VER }}
-      YANG_VER: "2.1.148-0.2"
-      YANG_BASE: "https://launchpad.net/ubuntu/+archive/primary/+files"
 
     steps:
       # 1) workflow reposu (Dockerfile burada)
