@@ -10,7 +10,7 @@ RUN apt-get update && \
       cmake ninja-build git wget \
       libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
       python3-dev bison flex \
-      libgrpc-dev libgrpc++-dev \
+      libgrpc-dev libgrpc++-dev grpc-compiler \
       libprotobuf-dev protobuf-compiler \
       libgrpc-dev libprotobuf-dev protobuf-c-compiler \
       libprotobuf-c-dev libelf-dev && \
