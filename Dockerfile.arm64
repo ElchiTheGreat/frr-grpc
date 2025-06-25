@@ -29,7 +29,6 @@ COPY . .
 
 RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
     ./bootstrap.sh && \
-    git submodule update --init --recursive && \
     mkdir build && cd build && \
     ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
                  --enable-grpc --enable-vtysh --disable-static \
