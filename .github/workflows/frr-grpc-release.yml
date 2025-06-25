@@ -96,6 +96,8 @@ jobs:
           repository: FRRouting/frr
           ref: ${{ env.FRR_VERSION }}
           path: frr-src
+          submodules: recursive
+          fetch-depth: 0 
 
       # 3) Dockerfile'ı context içine kopyala
       - name: Copy Dockerfile into build context
