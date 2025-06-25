@@ -79,7 +79,7 @@ jobs:
 # JOB 2 – arm64 build via QEMU + Buildx
 ################################################################################
   build-arm64:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, macos, arm64]
     env:
       FRR_VERSION: ${{ inputs.frr_version }}
       YANG_VER: "2.1.148-0.2"
