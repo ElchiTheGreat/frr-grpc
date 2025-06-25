@@ -7,11 +7,13 @@ on:
       frr_version:
         description: "FRR git tag / branch (e.g. frr-10.3.1)"
         required: true
-        default: "frr-10.3.1"
+        default: "10.3.1"
 
 env:
   YANG_VER: "2.1.148-0.2"
   YANG_BASE: "https://launchpad.net/ubuntu/+archive/primary/+files"
+  PKG_VER: ${{ inputs.frr_version }}
+  FRR_VERSION: frr-${{ inputs.frr_version }}  
 
 ################################################################################
 # JOB 1 – native amd64 build
@@ -20,8 +22,9 @@ jobs:
   build-amd64:
     runs-on: ubuntu-24.04
     env:
-      FRR_VERSION: ${{ inputs.frr_version }}
-
+      PKG_VER: ${{ env.PKG_VER }}
+      FRR_TAG: ${{ env.FRR_VERSION }}
+      
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,7 +68,6 @@ jobs:
         run: |
           cd build
           sudo mkdir -p /usr/lib/frr/modules /usr/include/frr
-          PKG_VER="${FRR_VERSION#frr-}"
           sudo checkinstall -D --install=no -y \
             --pkgname=frr --pkgversion="$PKG_VER" --pkgrelease=1 \
             --arch=amd64 --pakdir=$GITHUB_WORKSPACE/pkg-amd64 \
@@ -82,7 +84,8 @@ jobs:
   build-arm64:
     runs-on: [self-hosted, macos, arm64]
     env:
-      FRR_VERSION: ${{ inputs.frr_version }}
+      FRR_VERSION: ${{ env.FRR_VERSION }}
+      PKG_VER: ${{ env.PKG_VER }}
       YANG_VER: "2.1.148-0.2"
       YANG_BASE: "https://launchpad.net/ubuntu/+archive/primary/+files"
 
@@ -106,7 +109,7 @@ jobs:
 
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
-
+          
       - name: Build arm64 package
         uses: docker/build-push-action@v5
         with:
@@ -117,7 +120,7 @@ jobs:
           push: false
           build-args: |
             FRR_VERSION=${{ env.FRR_VERSION }}
-            PKG_VER=${{ env.FRR_VERSION#'frr-' }}
+            PKG_VER=${{ env.PKG_VER }}
             YANG_VER=${{ env.YANG_VER }}
             YANG_BASE=${{ env.YANG_BASE }}
           tags: frr-build:arm64
