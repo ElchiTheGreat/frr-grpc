@@ -1,0 +1,83 @@
+# .github/workflows/build-frr-grpc.yml
+name: Build FRR with classic gRPC
+
+on:
+  workflow_dispatch:
+    inputs:
+      frr_version:
+        description: "FRR git tag or branch, e.g. frr-10.3.1"
+        required: true
+        default: "frr-10.3.1"
+      arches:
+        description: 'JSON array of architectures, e.g. ["amd64","arm64"]'
+        required: true
+        default: '["amd64"]'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        arch: ${{ fromJSON(inputs.arches) }}
+
+    # Use the appropriate runner per arch; adjust for self-hosted if needed
+    runs-on: ${{ matrix.arch == 'amd64' && 'ubuntu-24.04' || 'ubuntu-latest' }}
+
+    steps:
+      - name: Check out upstream FRR
+        uses: actions/checkout@v4
+        with:
+          repository: FRRouting/frr
+          ref: ${{ inputs.frr_version }}
+
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential cmake ninja-build \
+            libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
+            python3-dev pkg-config bison flex \
+            libgrpc-dev libprotobuf-dev protobuf-c-compiler
+
+      - name: Configure & compile (classic gRPC)
+        run: |
+          mkdir build && cd build
+          ../configure \
+            --prefix=/usr \
+            --enable-grpc \
+            --enable-vtysh \
+            --enable-systemd=yes \
+            --sbindir=/usr/lib/frr \
+            --sysconfdir=/etc/frr \
+            --localstatedir=/var/run/frr \
+            --with-pkg-extra-version="-github-${{ github.run_number }}"
+          make -j"$(nproc)"
+
+      - name: Create .deb package
+        run: |
+          cd build
+          sudo checkinstall -D --install=no -y \
+            --pkgname=frr \
+            --pkgversion=${{ inputs.frr_version }} \
+            --pkgrelease=1 \
+            --arch=${{ matrix.arch }} \
+            --pakdir=$GITHUB_WORKSPACE/pkg \
+            make install
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frr-${{ matrix.arch }}
+          path: pkg/*.deb
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frr-*
+          merge-multiple: true
+          path: release
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.deb
