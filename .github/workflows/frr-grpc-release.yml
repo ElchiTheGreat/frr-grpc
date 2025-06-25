@@ -132,14 +132,41 @@ jobs:
 ################################################################################
   release:
     needs: [build-amd64, build-arm64]
-    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+
+    env:
+      TAG_NAME: frr-${{ inputs.frr_version }}   # frr-10.3.1 vb.
+
     steps:
+      # repo klonu tag ekleyebilmek için gerekli
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0           # tüm geçmiş + tag’ler
+
+      # tag yoksa oluştur
+      - name: Ensure tag exists
+        run: |
+          if ! git rev-parse -q --verify "refs/tags/${TAG_NAME}"; then
+            echo "::notice::Creating tag ${TAG_NAME}"
+            git config user.name  "github-actions"
+            git config user.email "actions@github.com"
+            git tag -a "${TAG_NAME}" -m "Automatic tag for FRR ${TAG_NAME#frr-}"
+            git push origin "${TAG_NAME}"
+          else
+            echo "::notice::Tag ${TAG_NAME} already present"
+          fi
+
+      # .deb artefact’larını içe aktar
       - uses: actions/download-artifact@v4
         with:
           pattern: frr-*
           merge-multiple: true
           path: release
+
+      # Release’i oluştur / güncelle
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: "FRR ${{ inputs.frr_version }}"
+          generate_release_notes: true
           files: release/*.deb
