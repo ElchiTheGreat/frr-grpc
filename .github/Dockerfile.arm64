@@ -13,7 +13,7 @@ RUN apt-get update && \
       libgrpc-dev libgrpc++-dev protobuf-compiler-grpc \
       libprotobuf-dev protobuf-compiler \
       libgrpc-dev libprotobuf-dev protobuf-c-compiler \
-      libprotobuf-c-dev libelf-dev && \
+      libprotobuf-c-dev libelf-dev checkinstall && \
     wget -q ${YANG_BASE}/libyang2t64_${YANG_VER}_arm64.deb && \
     wget -q ${YANG_BASE}/libyang2-dev_${YANG_VER}_arm64.deb && \
     apt-get install -y ./libyang2t64_${YANG_VER}_arm64.deb \
