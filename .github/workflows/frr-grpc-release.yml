@@ -40,7 +40,7 @@ jobs:
             libgrpc-dev libgrpc++-dev protobuf-compiler-grpc \
             libprotobuf-dev protobuf-compiler \
             libgrpc-dev libprotobuf-dev protobuf-c-compiler \
-            libprotobuf-c-dev libelf-dev wget
+            libprotobuf-c-dev libelf-dev wget checkinstall
 
           # libyang 2.1.148 (amd64)
           wget -q ${YANG_BASE}/libyang2t64_${YANG_VER}_amd64.deb
