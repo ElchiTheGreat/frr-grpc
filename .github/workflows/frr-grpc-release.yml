@@ -84,26 +84,31 @@ jobs:
       FRR_VERSION: ${{ inputs.frr_version }}
       YANG_VER: "2.1.148-0.2"
       YANG_BASE: "https://launchpad.net/ubuntu/+archive/primary/+files"
-  
+
     steps:
-      - name: Checkout workflow repo
-        uses: actions/checkout@v4
-  
+      # 1) workflow reposu (Dockerfile burada)
+      - uses: actions/checkout@v4
+
+      # 2) FRR kaynak kodunu alt klasöre çek
       - name: Checkout FRR upstream
         uses: actions/checkout@v4
         with:
           repository: FRRouting/frr
           ref: ${{ env.FRR_VERSION }}
           path: frr-src
-  
+
+      # 3) Dockerfile'ı context içine kopyala
+      - name: Copy Dockerfile into build context
+        run: cp Dockerfile.arm64 frr-src/
+
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
-  
+
       - name: Build arm64 package
         uses: docker/build-push-action@v5
         with:
-          context: ./frr-src
-          file: ../Dockerfile.arm64
+          context: ./frr-src            # ← artık Dockerfile burada
+          file: Dockerfile.arm64        # ← context içindeki dosya
           platforms: linux/arm64
           outputs: type=local,dest=out
           push: false
@@ -112,12 +117,12 @@ jobs:
             YANG_VER=${{ env.YANG_VER }}
             YANG_BASE=${{ env.YANG_BASE }}
           tags: frr-build:arm64
-  
+
       - name: Collect .deb
         run: |
           mkdir pkg-arm64
           mv out/*.deb pkg-arm64/
-  
+
       - uses: actions/upload-artifact@v4
         with:
           name: frr-arm64
