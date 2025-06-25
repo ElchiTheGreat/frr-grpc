@@ -117,6 +117,7 @@ jobs:
           push: false
           build-args: |
             FRR_VERSION=${{ env.FRR_VERSION }}
+            PKG_VER=${{ env.FRR_VERSION#'frr-' }}
             YANG_VER=${{ env.YANG_VER }}
             YANG_BASE=${{ env.YANG_BASE }}
           tags: frr-build:arm64
