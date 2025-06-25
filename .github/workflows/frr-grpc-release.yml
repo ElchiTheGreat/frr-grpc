@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       frr_version:
-        description: "FRR git tag / branch (e.g. 10.3.1)"
+        description: "FRR git release (e.g. 10.3.1)"
         required: true
         default: "10.3.1"
 
