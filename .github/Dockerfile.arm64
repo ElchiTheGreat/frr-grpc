@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1
+ARG FRR_VERSION
+FROM ubuntu:24.04
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential autoconf automake libtool pkg-config \
+      cmake ninja-build git \
+      libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
+      python3-dev bison flex \
+      libgrpc-dev libprotobuf-dev protobuf-c-compiler \
+      libprotobuf-c-dev libelf-dev \
+      libyang2t64 libyang2-dev libyang-dev checkinstall && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /frr
+COPY . .
+
+RUN ./bootstrap.sh && \
+    git submodule update --init --recursive && \
+    mkdir build && cd build && \
+    ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+                 --enable-grpc --enable-vtysh \
+                 --with-pkg-extra-version="-github-${FRR_VERSION}" && \
+    make -j"$(nproc)" && \
+    checkinstall -D --install=no -y \
+      --pkgname=frr --pkgversion=${FRR_VERSION} --pkgrelease=1 \
+      --arch=arm64 --pakdir=/frr/pkg make install
