@@ -27,7 +27,7 @@ RUN ./bootstrap.sh && \
     git submodule update --init --recursive && \
     mkdir build && cd build && \
     ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-                 --enable-grpc --enable-vtysh \
+                 --enable-grpc --enable-vtysh --disable-static \
                  --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
     checkinstall -D --install=no -y \
