@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 ARG FRR_VERSION
 ARG YANG_VER
 ARG YANG_BASE
+ARG PKG_VER
 
 # 1) enable universe + basic tools
 RUN apt-get update && \
@@ -35,5 +36,5 @@ RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
                  --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
     checkinstall -D --install=no -y \
-      --pkgname=frr --pkgversion=${FRR_VERSION} --pkgrelease=1 \
+      --pkgname=frr --pkgversion="${PKG_VER}" --pkgrelease=1 \
       --arch=arm64 --pakdir=/frr/pkg make install
