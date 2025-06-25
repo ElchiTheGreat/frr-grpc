@@ -29,6 +29,8 @@ jobs:
 
       - name: Install build deps
         run: |
+          # universe is required for libyang2*
+          sudo add-apt-repository -y universe
           sudo apt update
           sudo apt install -y \
             build-essential autoconf automake libtool pkg-config \
@@ -36,7 +38,8 @@ jobs:
             libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
             python3-dev bison flex \
             libgrpc-dev libprotobuf-dev protobuf-c-compiler \
-            libprotobuf-c-dev libelf-dev
+            libprotobuf-c-dev libelf-dev \
+            libyang2t64 libyang2-dev 
 
       - name: Generate configure
         run: |
