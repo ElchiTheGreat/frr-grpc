@@ -1,6 +1,10 @@
 # .github/workflows/build-frr-grpc.yml
 name: Build FRR (amd64 native + arm64 via QEMU buildx)
 
+permissions:
+  contents: write
+  packages: write 
+  
 on:
   workflow_dispatch:
     inputs:
