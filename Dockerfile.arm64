@@ -34,14 +34,12 @@ COPY . .
 
 RUN set -e; \
     DEB_HOST_MULTIARCH="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"; \
-    # libtool’un beklediği hedef dizin(ler)i oluştur
     mkdir -p \
       "/usr/lib/${DEB_HOST_MULTIARCH}/frr/modules" \
-      /usr/lib/frr                                   \
-      /usr/include/frr;                              \
+      /usr/lib/frr \
+      /usr/include/frr; \
     \
     ./bootstrap.sh && \
-    git submodule update --init --recursive && \
     mkdir build && cd build && \
     ../configure \
       --prefix=/usr \
@@ -51,12 +49,8 @@ RUN set -e; \
       --libdir=/usr/lib/${DEB_HOST_MULTIARCH}/frr \
       --with-moduledir=/usr/lib/${DEB_HOST_MULTIARCH}/frr/modules \
       LIBTOOLFLAGS="-rpath /usr/lib/${DEB_HOST_MULTIARCH}/frr" \
-      --enable-grpc \
-      --enable-vtysh \
-      --enable-systemd \
-      --enable-rpki \
-      --enable-pim6d \
-      --disable-scripting \
+      --enable-grpc --enable-vtysh --enable-systemd \
+      --enable-rpki --enable-pim6d --disable-scripting \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
