@@ -88,6 +88,13 @@ jobs:
             /usr/lib/frr \
             /usr/include/frr/bfdd
 
+          sudo install -Dm644 ../tools/frr.service   \
+                              /usr/lib/systemd/system/frr.service
+          sudo install -Dm644 ../tools/frr@.service  \
+                              /usr/lib/systemd/system/frr@.service
+          sudo install -Dm755 ../tools/frrinit.sh    \
+                              /usr/lib/frr/frrinit.sh
+
           sudo checkinstall -D --install=no -y \
             --pkgname=frr \
             --pkgversion="${PKG_VER}" \
