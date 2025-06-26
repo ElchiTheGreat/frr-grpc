@@ -58,8 +58,6 @@ RUN set -e; \
                    /usr/lib/systemd/system/frr.service && \
     install -Dm644 tools/frr@.service \
                    /usr/lib/systemd/system/frr@.service && \
-    install -Dm755 tools/frrinit.sh   \
-                   /usr/lib/frr/frrinit.sh && \
     checkinstall -D --install=no -y \
       --pkgname=frr \
       --pkgversion="${PKG_VER}" \
