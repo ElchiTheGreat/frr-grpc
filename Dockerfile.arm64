@@ -57,5 +57,5 @@ RUN set -e; \
     apt-get update && \
     apt-get install -y devscripts equivs && \
     mk-build-deps -ir -t "apt-get -y --no-install-recommends" && \
-    export DEB_BUILD_PROFILES="pkg.frr.grpc" && \
+    export DEB_BUILD_OPTIONS="nocheck" DEB_BUILD_PROFILES="pkg.frr.grpc" && \
     dpkg-buildpackage -b -uc -us -j$(nproc)
