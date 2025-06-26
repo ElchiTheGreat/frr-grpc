@@ -27,10 +27,12 @@ RUN apt-get install -y --no-install-recommends \
     rm -rf /libyang2t64_${YANG_VER}_arm64.deb \
            /libyang2-dev_${YANG_VER}_arm64.deb
 
+# ----- build FRR -------------------------------------------------------------
 WORKDIR /frr
 COPY . .
 
-RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
+RUN export DEB_HOST_MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH) && \
+    mkdir -p /usr/lib/frr/modules /usr/include/frr && \
     ./bootstrap.sh && \
     mkdir build && cd build && \
     ../configure \
@@ -38,16 +40,15 @@ RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
       --sysconfdir=/etc \
       --localstatedir=/var \
       --sbindir=/usr/lib/frr \
-      --enable-systemd \
-      --enable-grpc \
-      --enable-vtysh \
+      --libdir=/usr/lib/${DEB_HOST_MULTIARCH}/frr \
+      --with-moduledir=/usr/lib/${DEB_HOST_MULTIARCH}/frr/modules \
+      LIBTOOLFLAGS="-rpath /usr/lib/${DEB_HOST_MULTIARCH}/frr" \
+      --enable-grpc  --enable-vtysh  --enable-systemd \
+      --enable-rpki  --enable-pim6d  --disable-scripting \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
     checkinstall -D --install=no -y \
-      --pkgname=frr \
-      --pkgversion="${PKG_VER}" \
-      --pkgrelease=1 \
-      --arch=arm64 \
-      --pakdir=/frr/pkg \
+      --pkgname=frr --pkgversion="${PKG_VER}" --pkgrelease=1 \
+      --arch=arm64 --pakdir=/frr/pkg \
       make install
