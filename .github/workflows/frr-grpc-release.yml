@@ -156,10 +156,10 @@ jobs:
             YANG_BASE=${{ env.YANG_BASE }}
           tags: frr-build:arm64
 
-      - name: Collect .deb
+      - name: Collect .deb (arm64)
         run: |
-          mkdir pkg-arm64
-          find out -type f -path "*/pkg/frr_*_arm64.deb" -exec mv -v {} pkg-arm64/ \;
+          mkdir -p pkg-arm64
+          mv out/*.deb pkg-arm64/
 
       - uses: actions/upload-artifact@v4
         with:
