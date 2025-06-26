@@ -54,8 +54,15 @@ RUN set -e; \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
+    sed -Ei 's/^# (deb-src .*noble)/\1/' /etc/apt/sources.list && \
+    echo 'deb-src http://ports.ubuntu.com/ubuntu-ports noble main universe multiverse' >> /etc/apt/sources.list && \
+    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
+    \
+    # Build-Depends paketlerini otomatik kur
     apt-get install -y devscripts equivs && \
     mk-build-deps -ir -t "apt-get -y --no-install-recommends" debian/control && \
+    \
+    # Testleri atla, gRPC profiliyle derle
     export DEB_BUILD_OPTIONS="nocheck" DEB_BUILD_PROFILES="pkg.frr.grpc" && \
-    dpkg-buildpackage -b -uc -us -j$(nproc)
+    dpkg-buildpackage -b -uc -us -j"$(nproc)"
