@@ -82,14 +82,27 @@ jobs:
 
       - name: Build Debian packages (amd64)
         run: |
-          # build-depends paketlerini kur
+          set -e
+      
+          #------------------------------------------------------------
+          # 1) deb-src satırlarını aç + non-interactive kurulum ayarla
+          #------------------------------------------------------------
+          sudo sed -Ei 's/^# (deb-src .*noble)/\1/' /etc/apt/sources.list
+          export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
+      
+          #------------------------------------------------------------
+          # 2) Build-Depends paketlerini otomatik kur
+          #------------------------------------------------------------
           sudo apt-get install -y devscripts equivs
           sudo mk-build-deps -ir -t "apt-get -y --no-install-recommends" debian/control
       
-          # gRPC profilini açarak paketleri derle
+          #------------------------------------------------------------
+          # 3) gRPC profili ile, testleri atlayarak derle
+          #------------------------------------------------------------
           export DEB_BUILD_PROFILES="pkg.frr.grpc"
-          dpkg-buildpackage -b -uc -us --rules-option=nocheck -j$(nproc)
+          export DEB_BUILD_OPTIONS="nocheck"
+          dpkg-buildpackage -b -uc -us -j"$(nproc)"
       
       - name: Collect .deb artefacts
         run: |
