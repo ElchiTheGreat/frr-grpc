@@ -38,6 +38,7 @@ jobs:
           sudo apt update
           sudo apt install -y \
             build-essential autoconf automake libtool pkg-config \
+            librtr-dev librtr0 \
             cmake ninja-build \
             libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
             python3-dev bison flex \
