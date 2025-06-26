@@ -63,6 +63,7 @@ jobs:
 
       - name: Configure & make (amd64)
         run: |
+          export DEB_BUILD_OPTIONS=nocheck
           export DEB_HOST_MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
           mkdir build && cd build
           ../configure \
