@@ -53,7 +53,7 @@ jobs:
                               ./libyang2-dev_${YANG_VER}_amd64.deb
 
           rm -f  /libyang2t64_${YANG_VER}_amd64.deb \
-           /libyang2-dev_${YANG_VER}_amd64.deb && \
+           /libyang2-dev_${YANG_VER}_amd64.deb
 
       - name: Bootstrap
         run: |
