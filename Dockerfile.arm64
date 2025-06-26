@@ -54,6 +54,7 @@ RUN set -e; \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
+    cd .. && \
     sed -Ei 's/^# (deb-src .*noble)/\1/' /etc/apt/sources.list && \
     echo 'deb-src http://ports.ubuntu.com/ubuntu-ports noble main universe multiverse' >> /etc/apt/sources.list && \
     export DEBIAN_FRONTEND=noninteractive && \
