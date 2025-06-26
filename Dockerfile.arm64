@@ -37,7 +37,7 @@ RUN set -e; \
     mkdir -p \
       "/usr/lib/${DEB_HOST_MULTIARCH}/frr/modules" \
       /usr/lib/frr \
-      /usr/include/frr; \
+      /usr/include/frr/bfdd; \
     \
     ./bootstrap.sh && \
     mkdir build && cd build && \
