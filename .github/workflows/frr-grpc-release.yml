@@ -82,9 +82,17 @@ jobs:
       - name: Package .deb (amd64)
         run: |
           cd build
+          # libtool'un beklediği kütüphane dizinini hazırla
+          HOSTARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+          sudo mkdir -p /usr/lib/${HOSTARCH}/frr/modules
+      
+          # .deb’i oluştur
           sudo checkinstall -D --install=no -y \
-            --pkgname=frr --pkgversion="${PKG_VER}" --pkgrelease=1 \
-            --arch=amd64 --pakdir=$GITHUB_WORKSPACE/pkg-amd64 \
+            --pkgname=frr \
+            --pkgversion="${PKG_VER}" \
+            --pkgrelease=1 \
+            --arch=amd64 \
+            --pakdir=$GITHUB_WORKSPACE/pkg-amd64 \
             make install
 
       - uses: actions/upload-artifact@v4
