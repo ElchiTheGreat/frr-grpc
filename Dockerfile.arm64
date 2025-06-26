@@ -54,14 +54,8 @@ RUN set -e; \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
-    install -Dm644 tools/frr.service  \
-                   /usr/lib/systemd/system/frr.service && \
-    install -Dm644 tools/frr@.service \
-                   /usr/lib/systemd/system/frr@.service && \
-    checkinstall -D --install=no -y \
-      --pkgname=frr \
-      --pkgversion="${PKG_VER}" \
-      --pkgrelease=1 \
-      --arch=arm64 \
-      --pakdir=/frr/pkg \
-      make install
+    apt-get update && \
+    apt-get install -y devscripts equivs && \
+    mk-build-deps -ir -t "apt-get -y --no-install-recommends" && \
+    export DEB_BUILD_PROFILES="pkg.frr.grpc" && \
+    dpkg-buildpackage -b -uc -us -j$(nproc)
