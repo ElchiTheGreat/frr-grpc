@@ -63,9 +63,16 @@ jobs:
       - name: Configure & compile (amd64)
         run: |
           mkdir build && cd build
-          ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-                       --enable-grpc --enable-vtysh --disable-static \
-                       --with-pkg-extra-version="-github-${{ github.run_number }}"
+          ../configure \
+            --prefix=/usr \
+            --sysconfdir=/etc \
+            --localstatedir=/var \
+            --sbindir=/usr/lib/frr \
+            --enable-systemd \
+            --enable-grpc \
+            --enable-vtysh \
+            --disable-static \
+            --with-pkg-extra-version="-github-${{ github.run_number }}" && \
           make -j"$(nproc)"
 
       - name: Package .deb (amd64)
