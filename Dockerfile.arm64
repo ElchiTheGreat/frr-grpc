@@ -54,11 +54,11 @@ RUN set -e; \
       --disable-static \
       --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
-    install -Dm644 ../tools/frr.service  \
+    install -Dm644 tools/frr.service  \
                    /usr/lib/systemd/system/frr.service && \
-    install -Dm644 ../tools/frr@.service \
+    install -Dm644 tools/frr@.service \
                    /usr/lib/systemd/system/frr@.service && \
-    install -Dm755 ../tools/frrinit.sh   \
+    install -Dm755 tools/frrinit.sh   \
                    /usr/lib/frr/frrinit.sh && \
     checkinstall -D --install=no -y \
       --pkgname=frr \
