@@ -82,11 +82,11 @@ jobs:
       - name: Package .deb (amd64)
         run: |
           cd build
-          # libtool'un beklediği kütüphane dizinini hazırla
-          HOSTARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
-          sudo mkdir -p /usr/lib/${HOSTARCH}/frr/modules
-      
-          # .deb’i oluştur
+          HOSTARCH="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
+          sudo mkdir -p \
+            /usr/lib/${HOSTARCH}/frr/modules \
+            /usr/lib/frr 
+
           sudo checkinstall -D --install=no -y \
             --pkgname=frr \
             --pkgversion="${PKG_VER}" \
