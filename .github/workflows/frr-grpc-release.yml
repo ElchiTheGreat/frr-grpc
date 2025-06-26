@@ -86,7 +86,7 @@ jobs:
           sudo mkdir -p \
             /usr/lib/${HOSTARCH}/frr/modules \
             /usr/lib/frr \
-            /usr/include/frr 
+            /usr/include/frr/bfdd
 
           sudo checkinstall -D --install=no -y \
             --pkgname=frr \
