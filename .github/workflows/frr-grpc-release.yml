@@ -85,7 +85,8 @@ jobs:
           HOSTARCH="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
           sudo mkdir -p \
             /usr/lib/${HOSTARCH}/frr/modules \
-            /usr/lib/frr 
+            /usr/lib/frr \
+            /usr/include/frr 
 
           sudo checkinstall -D --install=no -y \
             --pkgname=frr \
