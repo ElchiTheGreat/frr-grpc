@@ -33,10 +33,21 @@ COPY . .
 RUN mkdir -p /usr/lib/frr/modules /usr/include/frr && \
     ./bootstrap.sh && \
     mkdir build && cd build && \
-    ../configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-                 --enable-grpc --enable-vtysh --disable-static \
-                 --with-pkg-extra-version="-github-${FRR_VERSION}" && \
+    ../configure \
+      --prefix=/usr \
+      --sysconfdir=/etc \
+      --localstatedir=/var \
+      --sbindir=/usr/lib/frr \
+      --enable-systemd \
+      --enable-grpc \
+      --enable-vtysh \
+      --disable-static \
+      --with-pkg-extra-version="-github-${FRR_VERSION}" && \
     make -j"$(nproc)" && \
     checkinstall -D --install=no -y \
-      --pkgname=frr --pkgversion="${PKG_VER}" --pkgrelease=1 \
-      --arch=arm64 --pakdir=/frr/pkg make install
+      --pkgname=frr \
+      --pkgversion="${PKG_VER}" \
+      --pkgrelease=1 \
+      --arch=arm64 \
+      --pakdir=/frr/pkg \
+      make install
