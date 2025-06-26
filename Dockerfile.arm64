@@ -13,6 +13,7 @@ RUN apt-get update && \
 # 2) build-deps (duplicate paketleri temizledim)
 RUN apt-get install -y --no-install-recommends \
       build-essential autoconf automake libtool pkg-config \
+      librtr-dev librtr0 \
       cmake ninja-build git wget \
       libreadline-dev libjson-c-dev libsnmp-dev libcap-dev \
       python3-dev bison flex \
