@@ -25,7 +25,7 @@ RUN apt-get install -y --no-install-recommends \
                        ./libyang2-dev_${YANG_VER}_arm64.deb && \
     rm -rf /var/lib/apt/lists/* \
     rm -rf /libyang2t64_${YANG_VER}_arm64.deb \
-           /libyang2-dev_${YANG_VER}_arm64.deb && \
+           /libyang2-dev_${YANG_VER}_arm64.deb
 
 WORKDIR /frr
 COPY . .
